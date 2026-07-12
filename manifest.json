@@ -3,6 +3,7 @@
   "name": "EasyCopy Float",
   "version": "1.0.0",
   "description": "A floating transparent panel on any website to manage and copy list items instantly.",
+  "author": "Sunil Kumar",
   "permissions": [
     "storage",
     "clipboardWrite",
