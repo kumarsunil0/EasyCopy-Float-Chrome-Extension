@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyCopy Settings</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --muted: #666666;
+      --border: #e0e0e0;
+      --button-bg: #f5f5f5;
+      --button-hover: #000000;
+      --button-hover-text: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 300px;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text);
+      padding: 0;
+    }
+
+    /* Tab Layout Header */
+    .tabs-header {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: #fafafa;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.15s ease;
+      outline: none;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: #f0f0f0;
+    }
+
+    .tab-btn.active {
+      color: var(--text);
+      background: #ffffff;
+      border-bottom: 2px solid #000000;
+    }
+
+    /* Content Views */
+    .tab-content {
+      padding: 14px;
+      display: none;
+    }
+
+    .tab-content.active-content {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* Input fields layout */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      padding: 6px 8px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+      font-family: inherit;
+      width: 100%;
+      resize: none;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+      border-color: #000000;
+    }
+
+    /* Helper row for placeholder buttons */
+    .helper-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1px;
+      margin-bottom: 4px;
+    }
+
+    .helper-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 2px 0;
+      font-family: inherit;
+      outline: none;
+    }
+
+    .helper-btn:hover {
+      color: #000000;
+    }
+
+    .helper-tip {
+      font-size: 9px;
+      color: #999999;
+      font-style: italic;
+    }
+
+    .add-btn {
+      width: 100%;
+      padding: 8px;
+      background: var(--button-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.1s ease;
+      letter-spacing: 0.5px;
+    }
+
+    .add-btn:hover {
+      background: var(--button-hover);
+      color: var(--button-hover-text);
+      border-color: var(--button-hover);
+    }
+
+    /* Saved items list inside Popup */
+    .items-container {
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fafafa;
+      margin-top: 6px;
+    }
+
+    .popup-item {
+      display: flex;
+      align-items: flex-start; /* Top-aligned for multi-line expanding boxes */
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      gap: 8px;
+    }
+
+    .popup-item:last-child {
+      border-bottom: none;
+    }
+
+    /* In-place Editable Input styles */
+    .popup-item-edit-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .popup-item-title-input {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--muted);
+      border: none;
+      background: transparent;
+      outline: none;
+      padding: 0;
+      width: 100%;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-family: inherit;
+    }
+
+    .popup-item-title-input:focus {
+      border-bottom: 1px dashed var(--muted);
+    }
+
+    /* Multiline expanding textareas */
+    .popup-item-text-input {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      border: none;
+      background: transparent;
+      outline: none;
+      padding: 0;
+      width: 100%;
+      font-family: inherit;
+      resize: none;
+      overflow-y: hidden;
+      line-height: 1.4;
+    }
+
+    .popup-item-text-input:focus {
+      border-bottom: 1px dashed var(--text);
+    }
+
+    .popup-item-delete {
+      background: transparent;
+      border: none;
+      color: #bbbbbb;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      transition: color 0.1s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .popup-item-delete:hover {
+      color: #ff3b30;
+    }
+
+    .empty-popup-list {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* Opacity & Width Layout */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      border-radius: 4px;
+      background: #fafafa;
+      margin-bottom: 12px;
+    }
+
+    .slider-row label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #popup-opacity-slider,
+    #popup-width-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 110px;
+      height: 3px;
+      background: #ddd;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #popup-opacity-slider::-webkit-slider-thumb,
+    #popup-width-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #000000;
+      cursor: pointer;
+    }
+
+    .val-display {
+      font-size: 11px;
+      font-weight: 600;
+      width: 38px;
+      text-align: right;
+    }
+
+    /* Site Whitelist Styles */
+    .site-select {
+      width: 100%;
+      padding: 6px;
+      font-size: 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      outline: none;
+      margin-bottom: 6px;
+      font-family: inherit;
+    }
+
+    .site-select:focus {
+      border-color: #000000;
+    }
+
+    .site-textarea {
+      width: 100%;
+      height: 60px;
+      font-size: 11px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      resize: none;
+      font-family: inherit;
+      outline: none;
+      display: none;
+      margin-bottom: 12px;
+    }
+
+    /* Backup row for import/export buttons */
+    .backup-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .backup-btn {
+      flex: 1;
+      padding: 6px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      outline: none;
+    }
+
+    .backup-btn:hover {
+      background: var(--button-hover);
+      color: var(--button-hover-text);
+      border-color: var(--button-hover);
+    }
+
+    .stats-row {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+    }
+
+    /* Clear all button */
+    .clear-btn {
+      width: 100%;
+      padding: 8px;
+      background: #ffffff;
+      border: 1px solid #ff3b30;
+      color: #ff3b30;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .clear-btn:hover {
+      background: #ff3b30;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tabs Navigation -->
+  <div class="tabs-header">
+    <button id="tab-btn-list" class="tab-btn active">List</button>
+    <button id="tab-btn-settings" class="tab-btn">Settings</button>
+  </div>
+
+  <!-- Tab 1: List Manager Content -->
+  <div id="tab-content-list" class="tab-content active-content">
+    <!-- Quick Add -->
+    <div class="input-group">
+      <input id="popup-title-input" type="text" placeholder="Title/Label (optional)..." autocomplete="off" />
+      <textarea id="popup-input" placeholder="Copy text (required)..." rows="1" autocomplete="off"></textarea>
+      
+      <!-- Placeholder Helper Row -->
+      <div class="helper-row">
+        <button type="button" id="insert-placeholder-btn" class="helper-btn">+ Add Fillable [fill]</button>
+      </div>
+
+      <button id="popup-add-btn" class="add-btn">Add Item</button>
+    </div>
+
+    <!-- List of Items -->
+    <div id="popup-items-list" class="items-container">
+      <!-- Dynamically filled -->
+    </div>
+  </div>
+
+  <!-- Tab 2: Settings Content -->
+  <div id="tab-content-settings" class="tab-content">
+    
+    <!-- Site Access Whitelist Settings -->
+    <div class="section-title">Website Access Settings</div>
+    <div>
+      <select id="popup-site-mode" class="site-select">
+        <option value="all">Run on All Sites</option>
+        <option value="listed">Run Only on Listed Sites</option>
+      </select>
+      <textarea id="popup-allowed-sites" class="site-textarea" placeholder="google.com&#10;example.com&#10;amazon.in"></textarea>
+    </div>
+
+    <!-- Import / Export Section -->
+    <div class="section-title">Backup & Restore</div>
+    <div class="backup-row">
+      <button id="popup-export-btn" class="backup-btn">Export Data</button>
+      <button id="popup-import-btn" class="backup-btn">Import Data</button>
+      <input type="file" id="popup-import-file" accept=".json" style="display: none;" />
+    </div>
+
+    <!-- Opacity Control -->
+    <div class="section-title">Float Opacity</div>
+    <div class="slider-row">
+      <label for="popup-opacity-slider">Opacity</label>
+      <div class="slider-container">
+        <input type="range" id="popup-opacity-slider" min="20" max="100" value="95" step="1" />
+        <span id="opacity-val" class="val-display">95%</span>
+      </div>
+    </div>
+
+    <!-- Width Control -->
+    <div class="section-title">Float Width</div>
+    <div class="slider-row">
+      <label for="popup-width-slider">Width</label>
+      <div class="slider-container">
+        <input type="range" id="popup-width-slider" min="120" max="450" value="220" step="5" />
+        <span id="width-val" class="val-display">220px</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div id="popup-item-count" class="stats-row">
+      0 items saved
+    </div>
+
+    <!-- Clear All -->
+    <button id="popup-clear-btn" class="clear-btn">Clear All Data</button>
+
+    <!-- GitHub Repo link footer -->
+    <div style="text-align: center; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 10px; margin-bottom: 4px;">
+      <a href="https://github.com/kumarsunil0/EasyCopy-Float-Chrome-Extension" target="_blank" style="font-size: 10px; color: var(--muted); text-decoration: none; font-weight: 600; font-family: inherit; display: inline-block;">GitHub Repo ↗</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
