@@ -10,7 +10,7 @@ A minimal, black-and-white aesthetic headless floating copy assistant for Chrome
 - **Two-Line Text Clamping**: Keeps your interface neat by clamping long paragraphs to exactly two lines. Easily expand them with the **`more`** link and minimize them back with **`less`**.
 - **Tabbed Popup Menu**: Separate layout for **List** management and **Settings** adjustments:
   - **Float Opacity & Width**: Adjust transparency and size of the floating container in real-time.
-  - **Website Whitelist**: Restrict the extension to run only on specific sites (e.g. `supplier.meesho.com/*`).
+  - **Website Whitelist**: Restrict the extension to run only on specific sites (e.g. `supplier.website.com/*`).
   - **Backup & Restore**: Easily **Export** and **Import** your templates list as `.json` files.
 - **Card-Wide Draggable Action**: Drag the panel by clicking anywhere on the background of any list item card or variable input header.
 - **Zero Page UI Clutter**: Floating cards are clean and display only the template text and a circular Copy (`⧉`) button. Edits, deletions, and clear controls are all kept in the extension popup menu.
